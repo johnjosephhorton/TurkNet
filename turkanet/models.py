@@ -1,6 +1,10 @@
 from google.appengine.ext import db as datastore
 
 
+def worker_lookup(worker_id, assignment_id):
+  return Worker.all().filter('id = ', worker_id).filter('assignment_id = ', assignment_id).get()
+
+
 class Experiment(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
   aws_access_key_id = datastore.StringProperty()
