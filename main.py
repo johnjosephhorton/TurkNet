@@ -6,7 +6,7 @@ from django.utils import simplejson as json
 
 from turkanet.models import Experiment, Worker, Labeling, Evaluation
 
-import cgi, yaml
+import cgi, yaml, urllib
 
 
 class RequestHandler(webapp.RequestHandler):
@@ -28,6 +28,12 @@ class RequestHandler(webapp.RequestHandler):
     self.response.headers['Content-Type'] = 'application/json'
 
     self.write(json.dumps(data))
+
+  def host_url(self, path, query_params={}):
+    if len(query_params) > 0:
+      return '%s%s?%s' % (self.request.host_url, path, urllib.urlencode(query_params))
+    else:
+      return '%s%s' % (self.request.host_url, path)
 
   def bad_request(self, text='Bad Request'):
     self.reply(400, text)
