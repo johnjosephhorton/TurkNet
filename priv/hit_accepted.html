@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <noscript>
+    <p>You need to enable Javascript in your web browser to work on this HIT.</p>
+  </noscript>
+
+  <div class="block" id="image" style="display: none">
+    <img src="{{ image_url }}" alt="">
+  </div>
+
+  <form action="{{ form_action }}" method="POST" style="display: none">
+    <div class="block"><input type="text" name="label" autofocus> <input type="button" value="+"></div>
+    <div class="block"><input type="hidden" name="time"><input type="submit" value="Done"></div>
+  </form>
+
+  <script>
+    $(document).ready(function () {
+      $('#image, form').fadeIn();
+
+      new Turkanet.LabelingUI($('form'));
+    });
+  </script>
+{% endblock %}

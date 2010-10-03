@@ -1,7 +1,7 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 
-from turkanet.models import Experiment, Worker, Labeling, Evaluation
+from turkanet.models import Experiment, Worker, Labeling, Evaluation, worker_lookup
 from turkanet.http import RequestHandler, entity_required
 from turkanet import mturk
 
@@ -37,8 +37,43 @@ class Upload(RequestHandler):
 
 
 class HIT(RequestHandler):
+  @entity_required(Experiment, 'experiment')
   def get(self):
-    self.write('TODO')
+    assignment_id = self.request.get('assignmentId', None)
+
+    if assignment_id is None:
+      self.not_found()
+    elif assignment_id == 'ASSIGNMENT_ID_NOT_AVAILABLE':
+      self.render('priv/hit_preview.html', {'experiment': self.experiment})
+    else:
+      worker_id = self.request.get('workerId')
+
+      worker = worker_lookup(worker_id, assignment_id)
+
+      if worker is None:
+        worker = Worker()
+        worker.id = worker_id
+        worker.assignment_id = assignment_id
+        worker.put()
+
+      self.render('priv/hit_accepted.html', {
+        'image_url': 'TODO'
+      , 'form_action': self.request.url
+      })
+
+  # @worker_required
+  # @entity_required(Experiment, 'experiment')
+  # def post(self):
+  #   labeling = Labeling()
+  #   labeling.image_url = TODO
+  #   labeling.worker = self.worker
+  #   labeling.labels = self.request.get_all('label')
+  #   labeling.time = int(self.request.get('time'))
+  #   labeling.put()
+  # 
+  #   location = self.mturk_submit_url(self.worker)
+  # 
+  #   self.redirect(location)
 
 
 def handlers():
