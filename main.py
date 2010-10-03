@@ -50,9 +50,15 @@ class Root(RequestHandler):
     self.write('OK')
 
 
+class Upload(RequestHandler):
+  def get(self):
+    self.render('priv/upload.html', {'action': self.request.url})
+
+
 def handlers():
   return [
     ('/', Root)
+  , ('/upload', Upload)
   ]
 
 
