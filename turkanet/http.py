@@ -33,6 +33,13 @@ class RequestHandler(webapp.RequestHandler):
     else:
       return '%s%s' % (self.request.host_url, path)
 
+  def mturk_submit_url(self, worker):
+    host_url = self.request.get('turkSubmitTo', 'https://www.mturk.com')
+
+    params = {'assignmentId': worker.assignment_id, 'workerId': worker.id}
+
+    return '%s/mturk/externalSubmit?%s' % (host_url, urllib.urlencode(params))
+
   def bad_request(self, text='Bad Request'):
     self.reply(400, text)
 
