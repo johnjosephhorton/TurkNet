@@ -2,6 +2,8 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext import db as datastore
 
+from turkanet.models import worker_lookup
+
 from django.utils import simplejson as json
 
 import cgi, urllib
@@ -70,3 +72,27 @@ def entity_required(model, attr):
 
     return _wrapper_fn
   return _decorate
+
+
+def worker_required(fn):
+  def _fn(self, *args, **kwargs):
+    worker_id = self.request.get('workerId', None)
+
+    assignment_id = self.request.get('assignmentId', None)
+
+    if worker_id is None:
+      self.bad_request('No workerId')
+    elif assignment_id is None:
+      self.bad_request('No assignmentId')
+    else:
+      try:
+        self.worker = worker_lookup(worker_id, assignment_id)
+
+        if self.worker is None:
+          self.not_found()
+        else:
+          return fn(self, *args, **kwargs)
+      except datastore.BadKeyError:
+        self.not_found()
+
+  return _fn
