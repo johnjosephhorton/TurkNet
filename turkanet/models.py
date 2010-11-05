@@ -43,5 +43,6 @@ class Labeling(datastore.Model):
 class Evaluation(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
   labeling = datastore.ReferenceProperty(Labeling)
-  evaluator = datastore.ReferenceProperty(Worker)
-  rating = datastore.IntegerProperty()
+  worker = datastore.ReferenceProperty(Worker)
+  bonus_split = datastore.IntegerProperty()
+  approval = datastore.BooleanProperty()
