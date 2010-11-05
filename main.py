@@ -1,10 +1,13 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
+from google.appengine.api.labs import taskqueue
 
 from turkanet.http import RequestHandler, entity_required, worker_required
 from turkanet.models import Experiment, Worker, Labeling, Evaluation, worker_lookup
 from turkanet.util import nonce
 from turkanet import mturk
+
+from datetime import datetime
 
 import yaml
 
@@ -77,11 +80,30 @@ class FirstStage(RequestHandler):
     self.render('priv/first_stage_complete.html', {})
 
 
+class Cron(RequestHandler):
+  def get(self):
+    experiments = Experiment.all().filter('second_stage_started = ', None)
+
+    for experiment in experiments:
+      worker_count = 0
+
+      for worker in Worker.all().filter('experiment = ', experiment):
+        if Labeling.all().filter('worker = ', worker).filter('image_url = ', experiment.images[0]).get():
+          worker_count += 1
+
+      if worker_count == experiment.cohort_size * experiment.cohort_count:
+        # TODO: taskqueue.add(url='/path/to/my/worker', params={})
+
+        experiment.second_stage_started = datetime.now()
+        experiment.put()
+
+
 def handlers():
   return [
     ('/', Root)
   , ('/upload', Upload)
   , ('/hit', FirstStage)
+  , ('/cron', Cron)
   ]
 
 

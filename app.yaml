@@ -12,5 +12,10 @@ handlers:
   login: admin
   script: main.py
 
+- url: /cron
+  secure: always
+  login: admin
+  script: main.py
+
 - url: /.*
   script: main.py

@@ -1,0 +1,4 @@
+cron:
+- description: First stage progress check
+  schedule: every 10 minutes
+  url: /cron
