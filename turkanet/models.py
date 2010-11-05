@@ -29,6 +29,7 @@ class Worker(datastore.Model):
   assignment_id = datastore.StringProperty()
   experiment = datastore.ReferenceProperty(Experiment)
   cohort_index = datastore.IntegerProperty()
+  nonce = datastore.StringProperty()
 
 
 class Labeling(datastore.Model):
