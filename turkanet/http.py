@@ -51,6 +51,9 @@ class RequestHandler(webapp.RequestHandler):
   def method_not_allowed(self, text='Method Not Allowed'):
     self.reply(405, text)
 
+  def internal_server_error(self, text='Internal Server Error'):
+    self.reply(500, text)
+
 
 def entity_required(model, attr):
   def _decorate(fn):
