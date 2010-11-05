@@ -1,0 +1,3 @@
+queue:
+- name: worker_grouping
+  rate: 12/h

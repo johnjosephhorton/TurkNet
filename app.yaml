@@ -17,5 +17,10 @@ handlers:
   login: admin
   script: main.py
 
+- url: /_ah/queue/(.*)
+  secure: always
+  login: admin
+  script: main.py
+
 - url: /.*
   script: main.py

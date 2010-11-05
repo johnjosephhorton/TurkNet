@@ -3,7 +3,8 @@ from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 from google.appengine.api.labs import taskqueue
 
 from turkanet.http import RequestHandler, entity_required, worker_required
-from turkanet.models import Experiment, Worker, Labeling, Evaluation, worker_lookup
+from turkanet.models import Experiment, Worker, Labeling, Evaluation
+from turkanet.models import worker_lookup, experiment_grouping_already_started
 from turkanet.util import nonce
 from turkanet import mturk
 
@@ -92,10 +93,27 @@ class Cron(RequestHandler):
           worker_count += 1
 
       if worker_count == experiment.cohort_size * experiment.cohort_count:
-        # TODO: taskqueue.add(url='/path/to/my/worker', params={})
+        taskqueue.add(queue_name='worker_grouping', params={'key': experiment.key()})
 
         experiment.second_stage_started = datetime.now()
         experiment.put()
+
+
+class WorkerGroupingTask(RequestHandler):
+  @entity_required(Experiment, 'experiment')
+  def post(self):
+    if experiment_grouping_already_started(self.experiment): # be idempotent
+      return
+
+    cycle = Cycle(range(experiment.cohort_count))
+
+    for worker in Worker.all().filter('experiment = ', experiment):
+      worker.cohort_index = cycle.next()
+
+      # TODO: if worker.cohort_index == 0:
+      # TODO:   taskqueue.add(queue_name='worker_notification', params={'key': worker.key()})
+
+      worker.put()
 
 
 def handlers():
@@ -104,6 +122,7 @@ def handlers():
   , ('/upload', Upload)
   , ('/hit', FirstStage)
   , ('/cron', Cron)
+  , ('/_ah/queue/worker_grouping', WorkerGroupingTask)
   ]
 
 
