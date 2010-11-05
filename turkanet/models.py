@@ -20,6 +20,7 @@ class Experiment(datastore.Model):
   hit_duration = datastore.IntegerProperty()
   hit_approval_delay = datastore.IntegerProperty()
   hit_frame_height = datastore.IntegerProperty()
+  hit_reward = datastore.StringProperty()
   cohort_count = datastore.IntegerProperty()
   cohort_size = datastore.IntegerProperty()
 
