@@ -5,9 +5,24 @@ def worker_lookup(worker_id, assignment_id):
   return Worker.all().filter('id = ', worker_id).filter('assignment_id = ', assignment_id).get()
 
 
+def experiment_grouping_already_started(experiment):
+  def _fn(key):
+    entity = datastore.get(key)
+
+    if entity.second_stage_grouping_started:
+      return True
+    else:
+      entity.second_stage_grouping_started = datetime.now()
+      entity.put()
+      return False
+
+  return datastore.run_in_transaction(_fn, experiment.key())
+
+
 class Experiment(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
   second_stage_started = datastore.DateTimeProperty()
+  second_stage_grouping_started = datastore.DateTimeProperty()
   aws_access_key_id = datastore.StringProperty()
   aws_secret_access_key = datastore.StringProperty()
   aws_hostname = datastore.StringProperty()
