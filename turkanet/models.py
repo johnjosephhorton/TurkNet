@@ -7,6 +7,7 @@ def worker_lookup(worker_id, assignment_id):
 
 class Experiment(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
+  second_stage_started = datastore.DateTimeProperty()
   aws_access_key_id = datastore.StringProperty()
   aws_secret_access_key = datastore.StringProperty()
   aws_hostname = datastore.StringProperty()
