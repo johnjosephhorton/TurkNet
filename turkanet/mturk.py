@@ -20,6 +20,6 @@ def create_hit(experiment, url):
   , keywords=experiment.hit_keywords
   , duration=experiment.hit_duration
   , approval_delay=experiment.hit_approval_delay
-  , reward=experiment.reward
+  , reward=experiment.hit_reward
   , response_groups=['Minimal', 'HITDetail', 'HITQuestion', 'HITAssignmentSummary']
   )
