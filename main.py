@@ -22,6 +22,7 @@ class Upload(RequestHandler):
   def get(self):
     self.render('priv/upload.html', {'action': self.request.url})
 
+  @throws_boto_errors
   def post(self):
     experiment = Experiment()
 

@@ -2,6 +2,8 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext import db as datastore
 
+from boto.exception import BotoClientError, BotoServerError
+
 from turkanet.models import worker_lookup
 
 from django.utils import simplejson as json
@@ -53,6 +55,18 @@ class RequestHandler(webapp.RequestHandler):
 
   def internal_server_error(self, text='Internal Server Error'):
     self.reply(500, text)
+
+
+def throws_boto_errors(fn):
+  def _fn(self, *args, **kwargs):
+    try:
+      return fn(self, *args, **kwargs)
+    except (BotoClientError, BotoServerError), response:
+      message = '%s: %s' % (response.errors[0][0], response.errors[0][1])
+
+      self.internal_server_error(message)
+
+  return _fn
 
 
 def entity_required(model, attr):
