@@ -1,8 +1,9 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 
-from turkanet.models import Experiment, Worker, Labeling, Evaluation, worker_lookup
 from turkanet.http import RequestHandler, entity_required
+from turkanet.models import Experiment, Worker, Labeling, Evaluation, worker_lookup
+from turkanet.util import nonce
 from turkanet import mturk
 
 import yaml
@@ -36,7 +37,7 @@ class Upload(RequestHandler):
       self.reply(500, 'Bad Mechanical Turk response: ' + repr(response))
 
 
-class HIT(RequestHandler):
+class FirstStage(RequestHandler):
   @entity_required(Experiment, 'experiment')
   def get(self):
     assignment_id = self.request.get('assignmentId', None)
@@ -54,6 +55,8 @@ class HIT(RequestHandler):
         worker = Worker()
         worker.id = worker_id
         worker.assignment_id = assignment_id
+        worker.experiment = self.experiment
+        worker.nonce = nonce()
         worker.put()
 
       self.render('priv/hit_accepted.html', {
@@ -80,7 +83,7 @@ def handlers():
   return [
     ('/', Root)
   , ('/upload', Upload)
-  , ('/hit', HIT)
+  , ('/hit', FirstStage)
   ]
 
 
