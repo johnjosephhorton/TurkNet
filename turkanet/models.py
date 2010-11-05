@@ -23,6 +23,7 @@ class Experiment(datastore.Model):
   hit_reward = datastore.StringProperty()
   cohort_count = datastore.IntegerProperty()
   cohort_size = datastore.IntegerProperty()
+  images = datastore.StringListProperty()
 
 
 class Worker(datastore.Model):
