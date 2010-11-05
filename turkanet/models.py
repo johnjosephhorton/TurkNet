@@ -27,6 +27,7 @@ class Worker(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
   id = datastore.StringProperty()
   assignment_id = datastore.StringProperty()
+  experiment = datastore.ReferenceProperty(Experiment)
   cohort_index = datastore.IntegerProperty()
 
 
