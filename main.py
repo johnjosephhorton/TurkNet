@@ -1,7 +1,7 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 
-from turkanet.http import RequestHandler, entity_required
+from turkanet.http import RequestHandler, entity_required, worker_required
 from turkanet.models import Experiment, Worker, Labeling, Evaluation, worker_lookup
 from turkanet.util import nonce
 from turkanet import mturk
@@ -59,24 +59,22 @@ class FirstStage(RequestHandler):
         worker.nonce = nonce()
         worker.put()
 
-      self.render('priv/hit_accepted.html', {
-        'image_url': 'TODO'
+      self.render('priv/first_stage_labeling.html', {
+        'image_url': self.experiment.images[0]
       , 'form_action': self.request.url
       })
 
-  # @worker_required
-  # @entity_required(Experiment, 'experiment')
-  # def post(self):
-  #   labeling = Labeling()
-  #   labeling.image_url = TODO
-  #   labeling.worker = self.worker
-  #   labeling.labels = self.request.get_all('label')
-  #   labeling.time = int(self.request.get('time'))
-  #   labeling.put()
-  # 
-  #   location = self.mturk_submit_url(self.worker)
-  # 
-  #   self.redirect(location)
+  @worker_required
+  @entity_required(Experiment, 'experiment')
+  def post(self):
+    labeling = Labeling()
+    labeling.image_url = self.experiment.images[0]
+    labeling.worker = self.worker
+    labeling.labels = self.request.get_all('label')
+    labeling.time = int(self.request.get('time'))
+    labeling.put()
+
+    self.render('priv/first_stage_complete.html', {})
 
 
 def handlers():
