@@ -5,7 +5,7 @@ from google.appengine.api.labs import taskqueue
 
 from turknet.http import RequestHandler, entity_required, worker_required, token_required
 from turknet.models import Experiment, Worker, Labeling, Evaluation
-from turknet.models import worker_lookup, experiment_grouping_already_started
+from turknet.models import worker_lookup, worker_evaluation, experiment_grouping_already_started
 from turknet.util import nonce, index_decr
 from turknet import mturk
 
@@ -160,10 +160,8 @@ class WorkerNotificationTask(RequestHandler):
 class SecondStageEvaluation(RequestHandler):
   @token_required
   def get(self):
-    evaluation = Evaluation.all().filter('worker = ', self.worker).get()
-
     self.render('priv/second_stage_evaluation.html', {
-      'labeling': evaluation.labeling
+      'labeling': worker_evaluation(self.worker).labeling
     , 'form_action': self.request.url
     })
 

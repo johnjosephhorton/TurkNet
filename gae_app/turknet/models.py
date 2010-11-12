@@ -5,6 +5,10 @@ def worker_lookup(worker_id, assignment_id):
   return Worker.all().filter('id = ', worker_id).filter('assignment_id = ', assignment_id).get()
 
 
+def worker_evaluation(worker):
+  return Evaluation.all().filter('worker = ', worker).get()
+
+
 def experiment_grouping_already_started(experiment):
   def _fn(key):
     entity = datastore.get(key)
