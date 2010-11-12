@@ -130,6 +130,25 @@ class WorkerGroupingTask(RequestHandler):
       worker.put()
 
 
+class SecondStageEvaluation(RequestHandler):
+  def get(self):
+    self.worker = Worker.all().filter('nonce = ', self.request.get('token'))
+
+    if self.worker is None:
+      self.not_found()
+      return
+
+    evaluation = Evaluation.all().filter('worker = ', worker).get()
+
+    self.render('priv/second_stage_evaluation.html', {
+      'labeling': evaluation.labeling
+    , 'form_action': self.request.url
+    })
+
+  def post(self):
+    pass
+
+
 def handlers():
   return [
     ('/', Root)
@@ -137,6 +156,7 @@ def handlers():
   , ('/hit', FirstStage)
   , ('/cron', Cron)
   , ('/_ah/queue/worker_grouping', WorkerGroupingTask)
+  , ('/second_stage/evaluation', SecondStageEvaluation)
   ]
 
 
