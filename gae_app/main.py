@@ -199,7 +199,9 @@ class SecondStageLabeling(RequestHandler):
     labeling.time = int(self.request.get('time'))
     labeling.put()
 
-    # TODO: notify worker from cohort n+1
+    evaluator = Worker.all().filter('peer_worker = ', self.worker).get()
+
+    taskqueue.add(queue_name='worker_notification', params={'key': evaluator.key()})
 
     self.redirect(self.mturk_submit_url())
 
