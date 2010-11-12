@@ -46,6 +46,7 @@ class Worker(datastore.Model):
   id = datastore.StringProperty()
   assignment_id = datastore.StringProperty()
   experiment = datastore.ReferenceProperty(Experiment)
+  peer_worker = datastore.SelfReferenceProperty()
   cohort_index = datastore.IntegerProperty()
   nonce = datastore.StringProperty()
 
