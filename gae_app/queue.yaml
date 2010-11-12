@@ -1,3 +1,5 @@
 queue:
 - name: worker_grouping
   rate: 12/h
+- name: worker_notification
+  rate: 5/s
