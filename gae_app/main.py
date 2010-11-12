@@ -114,9 +114,6 @@ class WorkerGroupingTask(RequestHandler):
     for worker in Worker.all().filter('experiment = ', self.experiment):
       worker.cohort_index = cycle.next()
 
-      # TODO: if worker.cohort_index == 0:
-      # TODO:   taskqueue.add(queue_name='worker_notification', params={'key': worker.key()})
-
       workers.append(worker)
 
       if peer_workers.has_key(worker.cohort_index):
@@ -129,6 +126,9 @@ class WorkerGroupingTask(RequestHandler):
 
       worker.peer_worker = peer_workers[previous_cohort_index].pop()
       worker.put()
+
+      if worker.cohort_index == 0:
+        taskqueue.add(queue_name='worker_notification', params={'key': worker.key()})
 
 
 class WorkerNotificationTask(RequestHandler):
