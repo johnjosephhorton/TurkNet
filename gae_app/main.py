@@ -1,4 +1,5 @@
 from google.appengine.ext import webapp
+from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 from google.appengine.api.labs import taskqueue
 
@@ -130,6 +131,32 @@ class WorkerGroupingTask(RequestHandler):
       worker.put()
 
 
+class WorkerNotificationTask(RequestHandler):
+  @entity_required(Worker, 'worker')
+  @throws_boto_errors
+  def post(self):
+    labeling = Labeling.all().filter('worker = ', self.worker.peer_worker).order('-created').get()
+
+    evaluation = Evaluation()
+    evaluation.worker = self.worker
+    evaluation.labeling = labeling
+    evaluation.put()
+
+    connection = mturk.connection(self.worker.experiment)
+
+    url = self.host_url('/second_stage/evaluation', {'token': self.worker.nonce})
+
+    message_text = template.render('priv/notification_message.txt', {'url': url})
+
+    connection._process_request('NotifyWorkers', {
+      'WorkerId': self.worker.id
+    , 'Subject': 'Second part of Mechanical Turk task'
+    , 'MessageText': message_text
+    })
+
+    self.write('OK')
+
+
 class SecondStageEvaluation(RequestHandler):
   def get(self):
     self.worker = Worker.all().filter('nonce = ', self.request.get('token'))
@@ -156,6 +183,7 @@ def handlers():
   , ('/hit', FirstStage)
   , ('/cron', Cron)
   , ('/_ah/queue/worker_grouping', WorkerGroupingTask)
+  , ('/_ah/queue/worker_notification', WorkerNotificationTask)
   , ('/second_stage/evaluation', SecondStageEvaluation)
   ]
 
