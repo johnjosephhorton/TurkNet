@@ -106,7 +106,7 @@ class WorkerGroupingTask(RequestHandler):
     if experiment_grouping_already_started(self.experiment): # be idempotent
       return
 
-    cycle = Cycle(range(experiment.cohort_count))
+    cycle = Cycle(range(self.experiment.cohort_count))
 
     workers, peer_workers = [], {}
 
