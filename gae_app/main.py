@@ -65,7 +65,7 @@ class FirstStage(RequestHandler):
         worker.nonce = nonce()
         worker.put()
 
-      self.render('priv/labeling.html', {
+      self.render('priv/labeling_form.html', {
         'image_url': self.experiment.images[0]
       , 'form_action': self.request.url
       })
@@ -160,7 +160,7 @@ class WorkerNotificationTask(RequestHandler):
 class SecondStageEvaluation(RequestHandler):
   @token_required
   def get(self):
-    self.render('priv/second_stage_evaluation.html', {
+    self.render('priv/evaluation_form.html', {
       'labeling': worker_evaluation(self.worker).labeling
     , 'form_action': self.request.url
     })
@@ -185,7 +185,7 @@ class SecondStageLabeling(RequestHandler):
 
   @token_required
   def get(self):
-    self.render('priv/labeling.html', {
+    self.render('priv/labeling_form.html', {
       'image_url': self.image_url(self.worker)
     , 'form_action': self.request.url
     })
