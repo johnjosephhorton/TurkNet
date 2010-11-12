@@ -167,7 +167,13 @@ class SecondStageEvaluation(RequestHandler):
 
   @token_required
   def post(self):
-    pass
+    evaluation = worker_evaluation(self.worker)
+
+    evaluation.bonus_split = self.request.get('bonus_split')
+    evaluation.approval = self.request.get('approve') == 'true'
+    evaluation.put()
+
+    self.redirect('/second_stage/labeling?token=' + self.token)
 
 
 class SecondStageLabeling(RequestHandler):

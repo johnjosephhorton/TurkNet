@@ -117,7 +117,9 @@ def worker_required(fn):
 
 def token_required(fn):
   def _fn(self, *args, **kwargs):
-    self.worker = Worker.all().filter('nonce = ', self.request.get('token')).get()
+    self.token = self.request.get('token')
+
+    self.worker = Worker.all().filter('nonce = ', self.token).get()
 
     if self.worker:
       return fn(self, *args, **kwargs)
