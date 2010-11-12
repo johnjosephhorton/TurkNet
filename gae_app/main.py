@@ -3,7 +3,7 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 from google.appengine.api.labs import taskqueue
 
-from turknet.http import RequestHandler, entity_required, worker_required
+from turknet.http import RequestHandler, entity_required, worker_required, token_required
 from turknet.models import Experiment, Worker, Labeling, Evaluation
 from turknet.models import worker_lookup, experiment_grouping_already_started
 from turknet.util import nonce, index_decr
@@ -158,20 +158,16 @@ class WorkerNotificationTask(RequestHandler):
 
 
 class SecondStageEvaluation(RequestHandler):
+  @token_required
   def get(self):
-    self.worker = Worker.all().filter('nonce = ', self.request.get('token'))
-
-    if self.worker is None:
-      self.not_found()
-      return
-
-    evaluation = Evaluation.all().filter('worker = ', worker).get()
+    evaluation = Evaluation.all().filter('worker = ', self.worker).get()
 
     self.render('priv/second_stage_evaluation.html', {
       'labeling': evaluation.labeling
     , 'form_action': self.request.url
     })
 
+  @token_required
   def post(self):
     pass
 

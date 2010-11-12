@@ -4,7 +4,7 @@ from google.appengine.ext import db as datastore
 
 from boto.exception import BotoClientError, BotoServerError
 
-from turknet.models import worker_lookup
+from turknet.models import worker_lookup, Worker
 
 from django.utils import simplejson as json
 
@@ -111,5 +111,17 @@ def worker_required(fn):
           return fn(self, *args, **kwargs)
       except datastore.BadKeyError:
         self.not_found()
+
+  return _fn
+
+
+def token_required(fn):
+  def _fn(self, *args, **kwargs):
+    self.worker = Worker.all().filter('nonce = ', self.request.get('token')).get()
+
+    if self.worker:
+      return fn(self, *args, **kwargs)
+    else:
+      self.bad_request()
 
   return _fn
