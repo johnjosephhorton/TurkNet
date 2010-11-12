@@ -172,6 +172,34 @@ class SecondStageEvaluation(RequestHandler):
     pass
 
 
+class SecondStageLabeling(RequestHandler):
+  def image_url(self, worker):
+    if worker.cohort_index % 2 == 0: # even cohort *index*, odd cohort *number*
+      return worker.experiment.images[1]
+    else:
+      return worker.experiment.images[2]
+
+  @token_required
+  def get(self):
+    self.render('priv/labeling.html', {
+      'image_url': self.image_url(self.worker)
+    , 'form_action': self.request.url
+    })
+
+  @token_required
+  def post(self):
+    labeling = Labeling()
+    labeling.image_url = self.image_url(self.worker)
+    labeling.worker = self.worker
+    labeling.labels = self.request.get_all('label')
+    labeling.time = int(self.request.get('time'))
+    labeling.put()
+
+    # TODO: notify worker from cohort n+1
+
+    self.redirect(self.mturk_submit_url())
+
+
 def handlers():
   return [
     ('/', Root)
@@ -181,6 +209,7 @@ def handlers():
   , ('/_ah/queue/worker_grouping', WorkerGroupingTask)
   , ('/_ah/queue/worker_notification', WorkerNotificationTask)
   , ('/second_stage/evaluation', SecondStageEvaluation)
+  , ('/second_stage/labeling', SecondStageLabeling)
   ]
 
 
