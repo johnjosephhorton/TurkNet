@@ -65,7 +65,7 @@ class FirstStage(RequestHandler):
         worker.nonce = nonce()
         worker.put()
 
-      self.render('priv/first_stage_labeling.html', {
+      self.render('priv/labeling.html', {
         'image_url': self.experiment.images[0]
       , 'form_action': self.request.url
       })
