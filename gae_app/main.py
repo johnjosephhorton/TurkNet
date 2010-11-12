@@ -5,7 +5,7 @@ from google.appengine.api.labs import taskqueue
 from turknet.http import RequestHandler, entity_required, worker_required
 from turknet.models import Experiment, Worker, Labeling, Evaluation
 from turknet.models import worker_lookup, experiment_grouping_already_started
-from turknet.util import nonce
+from turknet.util import nonce, index_decr
 from turknet import mturk
 
 from datetime import datetime
@@ -108,12 +108,25 @@ class WorkerGroupingTask(RequestHandler):
 
     cycle = Cycle(range(experiment.cohort_count))
 
-    for worker in Worker.all().filter('experiment = ', experiment):
+    workers, peer_workers = [], {}
+
+    for worker in Worker.all().filter('experiment = ', self.experiment):
       worker.cohort_index = cycle.next()
 
       # TODO: if worker.cohort_index == 0:
       # TODO:   taskqueue.add(queue_name='worker_notification', params={'key': worker.key()})
 
+      workers.append(worker)
+
+      if peer_workers.has_key(worker.cohort_index):
+        peer_workers[worker.cohort_index].append(worker)
+      else:
+        peer_workers[worker.cohort_index] = [worker]
+
+    for worker in workers:
+      previous_cohort_index = index_decr(worker.cohort_index, self.experiment.cohort_count)
+
+      worker.peer_worker = peer_workers[previous_cohort_index].pop()
       worker.put()
 
 
