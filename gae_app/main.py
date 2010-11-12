@@ -2,11 +2,11 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 from google.appengine.api.labs import taskqueue
 
-from turkanet.http import RequestHandler, entity_required, worker_required
-from turkanet.models import Experiment, Worker, Labeling, Evaluation
-from turkanet.models import worker_lookup, experiment_grouping_already_started
-from turkanet.util import nonce
-from turkanet import mturk
+from turknet.http import RequestHandler, entity_required, worker_required
+from turknet.models import Experiment, Worker, Labeling, Evaluation
+from turknet.models import worker_lookup, experiment_grouping_already_started
+from turknet.util import nonce
+from turknet import mturk
 
 from datetime import datetime
 

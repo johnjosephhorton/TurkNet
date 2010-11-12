@@ -4,7 +4,7 @@ from google.appengine.ext import db as datastore
 
 from boto.exception import BotoClientError, BotoServerError
 
-from turkanet.models import worker_lookup
+from turknet.models import worker_lookup
 
 from django.utils import simplejson as json
 
