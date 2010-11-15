@@ -55,13 +55,13 @@ class Worker(datastore.Model):
   nonce = datastore.StringProperty()
 
   def has_labeled_an_image(self):
-    return self.labeling_set.count() > 0
+    return self.labelings.count() > 0
 
 
 class Labeling(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
   image_url = datastore.StringProperty()
-  worker = datastore.ReferenceProperty(Worker)
+  worker = datastore.ReferenceProperty(Worker, collection_name='labelings')
   labels = datastore.StringListProperty()
   time = datastore.IntegerProperty()
 
