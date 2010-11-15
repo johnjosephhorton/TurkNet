@@ -11,7 +11,7 @@ from turknet import mturk
 
 from datetime import datetime
 
-import yaml
+import yaml, random
 
 
 class Root(RequestHandler):
@@ -128,7 +128,9 @@ class WorkerGroupingTask(RequestHandler):
     for worker in workers:
       previous_cohort_index = index_decr(worker.cohort_index, self.experiment.cohort_count)
 
-      worker.peer_worker = peer_workers[previous_cohort_index].pop()
+      previous_cohort = peer_workers[previous_cohort_index]
+
+      worker.peer_worker = previous_cohort.pop(random.randrange(len(previous_cohort)))
       worker.put()
 
       if worker.cohort_index == 0:
