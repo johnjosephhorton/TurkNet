@@ -65,7 +65,7 @@ class FirstStage(RequestHandler):
         worker.nonce = nonce()
         worker.put()
 
-      if worker.labeling_set.count() > 0:
+      if worker.has_labeled_an_image():
         self.render('priv/first_stage_complete.html', {})
       else:
         self.render('priv/labeling_form.html', {
@@ -76,7 +76,7 @@ class FirstStage(RequestHandler):
   @worker_required
   @entity_required(Experiment, 'experiment')
   def post(self):
-    if self.worker.labeling_set.count() == 0:
+    if not self.worker.has_labeled_an_image():
       labeling = Labeling()
       labeling.image_url = self.experiment.images[0]
       labeling.worker = self.worker
@@ -95,7 +95,7 @@ class Cron(RequestHandler):
       worker_count = 0
 
       for worker in Worker.all().filter('experiment = ', experiment):
-        if Labeling.all().filter('worker = ', worker).filter('image_url = ', experiment.images[0]).get():
+        if worker.has_labeled_an_image():
           worker_count += 1
 
       if worker_count == experiment.cohort_size * experiment.cohort_count:

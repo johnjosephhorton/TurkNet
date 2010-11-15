@@ -54,6 +54,9 @@ class Worker(datastore.Model):
   cohort_index = datastore.IntegerProperty()
   nonce = datastore.StringProperty()
 
+  def has_labeled_an_image(self):
+    return self.labeling_set.count() > 0
+
 
 class Labeling(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
