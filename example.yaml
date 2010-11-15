@@ -1,0 +1,21 @@
+aws_access_key_id: ACCESS_KEY_ID
+aws_secret_access_key: SECRET_ACCESS_KEY
+aws_hostname: mechanicalturk.sandbox.amazonaws.com
+
+hit_title: Title goes here
+hit_description: Description goes here
+hit_lifetime: 360
+hit_max_assignments: 1
+hit_keywords: []
+hit_duration: 180
+hit_approval_delay: 360
+hit_frame_height: 600
+hit_reward: '0.10'
+
+images:
+  - http://example.com/imgA.jpg
+  - http://example.com/imgB.jpg
+  - http://example.com/imgC.jpg
+
+cohort_count: 5
+cohort_size: 10
