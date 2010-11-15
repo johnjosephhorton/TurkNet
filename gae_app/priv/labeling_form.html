@@ -9,7 +9,7 @@
     <img src="{{ image_url }}" alt="">
   </div>
 
-  <form action="{{ form_action }}" method="POST" style="display: none">
+  <form action="{{ form_action }}" method="POST" style="display: none" id="labeling_form">
     <div class="block"><input type="text" name="label" autofocus> <input type="button" value="+"></div>
     <div class="block"><input type="hidden" name="time"><input type="submit" value="Done"></div>
   </form>
@@ -21,4 +21,15 @@
       new Turkanet.LabelingUI($('form'));
     });
   </script>
+
+  <style>
+    #image, #labeling_form div {
+      margin: 20px;
+    }
+
+    #labeling_form input.block {
+      display: block;
+      margin: 20px 0;
+    }
+  </style>
 {% endblock %}
