@@ -2,9 +2,9 @@ function $new(tagName, attrs) {
   return jQuery(document.createElement(tagName)).attr(attrs || {});
 }
 
-var Turkanet = {};
+var Turknet = {};
 
-Turkanet.LabelingUI = function (form) {
+Turknet.LabelingUI = function (form) {
   var start = new Date();
 
   var submitted = false;
