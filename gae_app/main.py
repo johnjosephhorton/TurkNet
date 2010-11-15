@@ -65,20 +65,24 @@ class FirstStage(RequestHandler):
         worker.nonce = nonce()
         worker.put()
 
-      self.render('priv/labeling_form.html', {
-        'image_url': self.experiment.images[0]
-      , 'form_action': self.request.url
-      })
+      if worker.labeling_set.count() > 0:
+        self.render('priv/first_stage_complete.html', {})
+      else:
+        self.render('priv/labeling_form.html', {
+          'image_url': self.experiment.images[0]
+        , 'form_action': self.request.url
+        })
 
   @worker_required
   @entity_required(Experiment, 'experiment')
   def post(self):
-    labeling = Labeling()
-    labeling.image_url = self.experiment.images[0]
-    labeling.worker = self.worker
-    labeling.labels = self.request.get_all('label')
-    labeling.time = int(self.request.get('time'))
-    labeling.put()
+    if self.worker.labeling_set.count() == 0:
+      labeling = Labeling()
+      labeling.image_url = self.experiment.images[0]
+      labeling.worker = self.worker
+      labeling.labels = self.request.get_all('label')
+      labeling.time = int(self.request.get('time'))
+      labeling.put()
 
     self.render('priv/first_stage_complete.html', {})
 
