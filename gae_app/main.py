@@ -141,7 +141,7 @@ class WorkerNotificationTask(RequestHandler):
   @entity_required(Worker, 'worker')
   @throws_boto_errors
   def post(self):
-    labeling = Labeling.all().filter('worker = ', self.worker.peer_worker).order('-created').get()
+    labeling = self.worker.peer_worker.labelings.order('-created').get()
 
     evaluation = Evaluation()
     evaluation.worker = self.worker
