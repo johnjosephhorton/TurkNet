@@ -175,7 +175,7 @@ class SecondStageEvaluation(RequestHandler):
   def post(self):
     evaluation = worker_evaluation(self.worker)
 
-    evaluation.bonus_split = self.request.get('bonus_split')
+    evaluation.bonus_split = int(self.request.get('bonus_split'))
     evaluation.approval = self.request.get('approve') == 'true'
     evaluation.put()
 
