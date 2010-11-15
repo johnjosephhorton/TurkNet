@@ -30,3 +30,25 @@ def index_decr(value, length):
     return length - 1
   else:
     return value - 1
+
+
+if __name__ == '__main__':
+  import unittest
+
+  class TestCase(unittest.TestCase):
+    def test_cycle(self):
+      cycle = Cycle(range(3))
+
+      self.assertEqual(0, cycle.next())
+      self.assertEqual(1, cycle.next())
+      self.assertEqual(2, cycle.next())
+      self.assertEqual(0, cycle.next())
+      self.assertEqual(1, cycle.next())
+      self.assertEqual(2, cycle.next())
+
+    def test_index_decr(self):
+      self.assertEqual(2, index_decr(0, 3))
+      self.assertEqual(0, index_decr(1, 3))
+      self.assertEqual(1, index_decr(2, 3))
+
+  unittest.main()
