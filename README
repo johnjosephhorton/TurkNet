@@ -1,0 +1,7 @@
+Before deploying a new version of the application:
+  - edit application name in gae_app/app.yaml
+  - edit notification message template (gae_app/priv/notification_message.txt)
+
+To start a new experiment:
+  - visit http://{application_name}.appspot.com/upload and login
+  - upload a config file (same format as example.yaml)
