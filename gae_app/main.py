@@ -3,7 +3,7 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 from google.appengine.api.labs import taskqueue
 
-from turknet.http import RequestHandler, entity_required, worker_required, token_required
+from turknet.http import RequestHandler, throws_boto_errors, entity_required, worker_required, token_required
 from turknet.models import Experiment, Worker, Labeling, Evaluation
 from turknet.models import worker_lookup, worker_evaluation, experiment_grouping_already_started
 from turknet.util import nonce, index_decr
