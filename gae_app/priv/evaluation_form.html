@@ -8,40 +8,39 @@
   </div>
 
   {% for label in labeling.labels %}
-    <p><input type="text" value="{{ label|escape }}"></p>
+    <p><input type="text" value="{{ label|escape }}" disabled></p>
   {% endfor %}
 
   <form action="{{ form_action|escape }}" method="POST">
     <p>Should we approve this work?</p>
 
-    <p><input type="radio" name="approve" value="true"> Yes</p>
+    <p><input type="radio" name="approve" value="true"> Yes <input type="radio" name="approve" value="false" style="margin-left: 20px"> No</p>
 
-    <p><input type="radio" name="approve" value="false"> No</p>
-
-    <p>We want to determine how good this work is. We would like you to decide,
+    <p style="line-height: 1.5em">We want to determine how good this work is. We would like you to decide,<br>
       based on your work and the quality of the other work, how to split a 9 cent bonus:</p>
 
-    <p><input type="radio" name="bonus_split" value="9"> 9 cents for them, 0 cents for me</p>
-
-    <p><input type="radio" name="bonus_split" value="8"> 8 cents for them, 1 cent for me</p>
-
-    <p><input type="radio" name="bonus_split" value="7"> 7 cents for them, 2 cents for me</p>
-
-    <p><input type="radio" name="bonus_split" value="6"> 6 cents for them, 3 cents for me</p>
-
-    <p><input type="radio" name="bonus_split" value="5"> 5 cents for them, 4 cents for me</p>
-
-    <p><input type="radio" name="bonus_split" value="4"> 4 cents for them, 5 cents for me</p>
-
-    <p><input type="radio" name="bonus_split" value="3"> 3 cents for them, 6 cents for me</p>
-
-    <p><input type="radio" name="bonus_split" value="2"> 2 cents for them, 7 cents for me</p>
-
-    <p><input type="radio" name="bonus_split" value="1"> 1 cent for them, 8 cents for me</p>
-
-    <p><input type="radio" name="bonus_split" value="0"> 0 cents for them, 9 cents for me</p>
+    <ul>
+      <li><input type="radio" name="bonus_split" value="9"> 9 cents for them, 0 cents for me</li>
+      <li><input type="radio" name="bonus_split" value="8"> 8 cents for them, 1 cent for me</li>
+      <li><input type="radio" name="bonus_split" value="7"> 7 cents for them, 2 cents for me</li>
+      <li><input type="radio" name="bonus_split" value="6"> 6 cents for them, 3 cents for me</li>
+      <li><input type="radio" name="bonus_split" value="5"> 5 cents for them, 4 cents for me</li>
+      <li><input type="radio" name="bonus_split" value="4"> 4 cents for them, 5 cents for me</li>
+      <li><input type="radio" name="bonus_split" value="3"> 3 cents for them, 6 cents for me</li>
+      <li><input type="radio" name="bonus_split" value="2"> 2 cents for them, 7 cents for me</li>
+      <li><input type="radio" name="bonus_split" value="1"> 1 cent for them, 8 cents for me</li>
+      <li><input type="radio" name="bonus_split" value="0"> 0 cents for them, 9 cents for me</li>
+    </ul>
 
     <p><input type="submit" value="Submit evaluation"></p>
   </form>
 
+  <style>
+    ul {
+      margin: 10px 20px;
+    }
+    li {
+      margin: 10px 0;
+    }
+  </style>
 {% endblock %}
