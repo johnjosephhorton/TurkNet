@@ -99,7 +99,7 @@ class Cron(RequestHandler):
           worker_count += 1
 
       if worker_count == experiment.cohort_size * experiment.cohort_count:
-        taskqueue.add(queue_name='worker_grouping', params={'key': experiment.key()})
+        taskqueue.add(queue_name='worker-grouping', params={'key': experiment.key()})
 
         experiment.second_stage_started = datetime.now()
         experiment.put()
@@ -134,7 +134,7 @@ class WorkerGroupingTask(RequestHandler):
       worker.put()
 
       if worker.cohort_index == 0:
-        taskqueue.add(queue_name='worker_notification', params={'key': worker.key()})
+        taskqueue.add(queue_name='worker-notification', params={'key': worker.key()})
 
 
 class WorkerNotificationTask(RequestHandler):
@@ -207,7 +207,7 @@ class SecondStageLabeling(RequestHandler):
 
     evaluator = Worker.all().filter('peer_worker = ', self.worker).get()
 
-    taskqueue.add(queue_name='worker_notification', params={'key': evaluator.key()})
+    taskqueue.add(queue_name='worker-notification', params={'key': evaluator.key()})
 
     self.redirect(self.mturk_submit_url())
 
@@ -218,8 +218,8 @@ def handlers():
   , ('/upload', Upload)
   , ('/hit', FirstStage)
   , ('/cron', Cron)
-  , ('/_ah/queue/worker_grouping', WorkerGroupingTask)
-  , ('/_ah/queue/worker_notification', WorkerNotificationTask)
+  , ('/_ah/queue/worker-grouping', WorkerGroupingTask)
+  , ('/_ah/queue/worker-notification', WorkerNotificationTask)
   , ('/second_stage/evaluation', SecondStageEvaluation)
   , ('/second_stage/labeling', SecondStageLabeling)
   ]
